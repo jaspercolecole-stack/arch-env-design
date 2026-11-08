@@ -1,0 +1,1604 @@
+{
+  "demo_notice": {
+    "fictional": true,
+    "badge": "【虚构演示数据】",
+    "summary": "青溪实验学校新校区是 arch-env-design 技能的示例工程：地点（示例城市·滨河片区）、控规条件（limits）、先例案例（references）、树位（trees）、市政接口与设备参数全部虚构，仅用于演示 checklist.py 深化阶段 23 条规则所要求的字段写法与口径。",
+    "prohibited_use": "不得作为任何真实项目的设计依据、报审材料、工程量或造价来源。",
+    "self_consistent_figures": "用地 14772 m²；计容建筑面积 27120 m²；FAR 1.8359；密度 38.61%；绿地 6870 m²（46.51%）；机动车 42 位（全地下）；非机动车 260 位；最高 21.6m（综合楼 C，6 层 × 3.6m）。",
+    "assumptions": "太阳高度角按北纬 30.4° 真太阳时计算；植物覆土控制值、市政雨水接口与地下管线走廊为示例取值，实施前须替换为项目所在地气象、园林与市政资料[待核]。",
+    "version_note": "2025-10-23 深化阶段补全；新增字段只增不改，site.boundary / masses / elements / materials / metrics / limits / drawings 保持原值，避免总平面、平面、剖面与 DXF/GLB 错位。"
+  },
+  "project": {
+    "name": "青溪实验学校新校区",
+    "type": "校园",
+    "standards": "CN",
+    "units": "m",
+    "level_height": 3.6,
+    "level_height_note": "教学楼与综合楼统一 3.6m 标准层高；体育馆按单层大跨折算",
+    "location": "示例城市·滨河片区",
+    "date": "2025-10-23",
+    "drawing_number": "AE-2025-001"
+  },
+  "site": {
+    "boundary": [
+      [
+        0,
+        0
+      ],
+      [
+        150,
+        0
+      ],
+      [
+        150,
+        110
+      ],
+      [
+        96,
+        110
+      ],
+      [
+        96,
+        92
+      ],
+      [
+        0,
+        92
+      ]
+    ],
+    "north_deg": 0,
+    "setbacks": {
+      "front": 8,
+      "back": 6,
+      "left": 5,
+      "right": 5
+    },
+    "levels": [
+      {
+        "name": "室外地面",
+        "elevation": -0.15
+      },
+      {
+        "name": "一层",
+        "elevation": 0
+      },
+      {
+        "name": "二层",
+        "elevation": 3.6
+      },
+      {
+        "name": "三层",
+        "elevation": 7.2
+      },
+      {
+        "name": "四层",
+        "elevation": 10.8
+      },
+      {
+        "name": "五层",
+        "elevation": 14.4
+      },
+      {
+        "name": "六层",
+        "elevation": 18
+      },
+      {
+        "name": "屋顶层",
+        "elevation": 21.6
+      }
+    ],
+    "datum_note": "±0.00 相当于绝对标高 12.400m",
+    "constraints": [
+      {
+        "id": "C-01",
+        "type": "用地红线",
+        "detail": "6 点多边形，面积 14772 m²（150m×110m 外接矩形缺西北角 96m×18m 凹口）",
+        "handled": true,
+        "response": "四栋建筑均退红线：A 西 18m / 南 16m；B 北 14m；C 东 6m / 南 16m；D 北 20m",
+        "drawing": "X-01 总平面"
+      },
+      {
+        "id": "C-02",
+        "type": "建筑退线（示例控规条件，虚构）",
+        "detail": "南 8m / 北 6m / 西 5m / 东 5m（site.setbacks）",
+        "handled": true,
+        "response": "逐栋校核见 C-01；C 栋东墙仅余 1m 余量，深化阶段不得外扩",
+        "drawing": "X-01 总平面"
+      },
+      {
+        "id": "C-03",
+        "type": "建筑限高",
+        "detail": "24.0m（limits.height_m，示例值）",
+        "handled": true,
+        "response": "最高为综合楼 C 21.6m，余量 2.4m；体育馆 D 屋脊 10.8+4.2=15.0m",
+        "drawing": "X-03 剖面"
+      },
+      {
+        "id": "C-04",
+        "type": "河道蓝线与滨水退距",
+        "detail": "用地界外北侧为滨河绿带[待核：蓝线范围以水利部门划定为准]",
+        "handled": true,
+        "response": "北侧不设地下室；建筑北退 B 栋 14m、D 栋 20m；绿带内只做草坪与步道",
+        "drawing": "X-01 总平面"
+      },
+      {
+        "id": "C-05",
+        "type": "保留古树 2 株",
+        "detail": "位于西侧草坪（约 x=8/y=20 与 x=12/y=34），冠幅约 8m[待核：树位与保护等级以园林部门复测为准]",
+        "handled": true,
+        "response": "草坪范围内不设地下室与管线；A 栋西墙外 2m 设 2.5m 绿化缓冲，冠下铺装改透水做法",
+        "drawing": "X-10 接口图"
+      },
+      {
+        "id": "C-06",
+        "type": "市政接口",
+        "detail": "雨水：南侧市政雨水接口 DN600 一处（y=0，x≈110）[待核：管径与管底标高以市政资料为准]",
+        "handled": true,
+        "response": "4 条地面路径 + 1 条屋面内排水全部排向该接口（见 drainage）",
+        "drawing": "X-11 排水路径"
+      },
+      {
+        "id": "C-07",
+        "type": "地下管线走廊",
+        "detail": "东侧红线内 3m 为电力与给水走廊[待核：管线实测资料待补]",
+        "handled": true,
+        "response": "地下室外墙退至 x=144（距红线 6.0m ≥ 3.0m），走廊内不设构筑物",
+        "drawing": "X-10 接口图"
+      },
+      {
+        "id": "C-08",
+        "type": "场地竖向",
+        "detail": "场地整体平整：室外地面 -0.15m，±0.00 相当于绝对标高 12.400m",
+        "handled": true,
+        "response": "场地按 0.3%~0.6% 找坡至雨水口，最大高差 0.45m；出入口以 1:20 缓坡消化",
+        "drawing": "X-02 竖向"
+      }
+    ],
+    "soil_min_mm": {
+      "大乔木": 1500,
+      "小乔木": 600,
+      "灌木": 450,
+      "地被": 300
+    },
+    "planting_note": "覆土控制值：地面层大乔木 1800~2000mm；地下室顶板覆土 1500mm，覆土区只植小乔木（需 600）/灌木（450）/地被（300）。依据 GB/T 51346-2019《城市绿地规划标准》种植土厚度常用控制值[待核：结构荷载按 12 kN/m³ 复核]。"
+  },
+  "masses": [
+    {
+      "id": "A",
+      "name": "教学楼A",
+      "footprint": [
+        [
+          18,
+          16
+        ],
+        [
+          80,
+          16
+        ],
+        [
+          80,
+          40
+        ],
+        [
+          18,
+          40
+        ]
+      ],
+      "base": 0,
+      "height": 14.4,
+      "roof": "flat",
+      "material": "concrete"
+    },
+    {
+      "id": "B",
+      "name": "教学楼B",
+      "footprint": [
+        [
+          18,
+          54
+        ],
+        [
+          80,
+          54
+        ],
+        [
+          80,
+          78
+        ],
+        [
+          18,
+          78
+        ]
+      ],
+      "base": 0,
+      "height": 18,
+      "roof": "flat",
+      "material": "concrete"
+    },
+    {
+      "id": "C",
+      "name": "综合楼",
+      "footprint": [
+        [
+          100,
+          16
+        ],
+        [
+          144,
+          16
+        ],
+        [
+          144,
+          58
+        ],
+        [
+          100,
+          58
+        ]
+      ],
+      "base": 0,
+      "height": 21.6,
+      "roof": "flat",
+      "overhang": 0.9,
+      "material": "glass"
+    },
+    {
+      "id": "D",
+      "name": "体育馆",
+      "footprint": [
+        [
+          100,
+          70
+        ],
+        [
+          144,
+          70
+        ],
+        [
+          144,
+          90
+        ],
+        [
+          100,
+          90
+        ]
+      ],
+      "base": 0,
+      "height": 10.8,
+      "roof": "gable",
+      "roof_rise": 4.2,
+      "overhang": 1.2,
+      "material": "metal_roof"
+    }
+  ],
+  "elements": [
+    {
+      "kind": "path",
+      "name": "主环路",
+      "points": [
+        [
+          92,
+          3
+        ],
+        [
+          92,
+          89
+        ]
+      ],
+      "width": 8,
+      "surface": "asphalt"
+    },
+    {
+      "kind": "path",
+      "name": "东西主路",
+      "points": [
+        [
+          3,
+          47
+        ],
+        [
+          88,
+          47
+        ]
+      ],
+      "width": 6,
+      "surface": "asphalt"
+    },
+    {
+      "kind": "plaza",
+      "name": "入口广场",
+      "polygon": [
+        [
+          12,
+          4
+        ],
+        [
+          80,
+          4
+        ],
+        [
+          80,
+          12
+        ],
+        [
+          12,
+          12
+        ]
+      ],
+      "surface": "stone"
+    },
+    {
+      "kind": "plaza",
+      "name": "东区广场",
+      "polygon": [
+        [
+          100,
+          62
+        ],
+        [
+          140,
+          62
+        ],
+        [
+          140,
+          68
+        ],
+        [
+          100,
+          68
+        ]
+      ],
+      "surface": "stone"
+    },
+    {
+      "kind": "water",
+      "name": "映月池",
+      "polygon": [
+        [
+          24,
+          84
+        ],
+        [
+          60,
+          84
+        ],
+        [
+          60,
+          90
+        ],
+        [
+          24,
+          90
+        ]
+      ]
+    },
+    {
+      "kind": "green",
+      "name": "西侧草坪",
+      "polygon": [
+        [
+          4,
+          14
+        ],
+        [
+          16,
+          14
+        ],
+        [
+          16,
+          42
+        ],
+        [
+          4,
+          42
+        ]
+      ]
+    },
+    {
+      "kind": "green",
+      "name": "东侧绿带(南)",
+      "polygon": [
+        [
+          82,
+          14
+        ],
+        [
+          86,
+          14
+        ],
+        [
+          86,
+          42
+        ],
+        [
+          82,
+          42
+        ]
+      ]
+    },
+    {
+      "kind": "green",
+      "name": "东侧绿带(北)",
+      "polygon": [
+        [
+          82,
+          52
+        ],
+        [
+          86,
+          52
+        ],
+        [
+          86,
+          74
+        ],
+        [
+          82,
+          74
+        ]
+      ]
+    },
+    {
+      "kind": "green",
+      "name": "西南林荫地",
+      "polygon": [
+        [
+          4,
+          54
+        ],
+        [
+          16,
+          54
+        ],
+        [
+          16,
+          78
+        ],
+        [
+          4,
+          78
+        ]
+      ]
+    },
+    {
+      "kind": "green",
+      "name": "东北坡地公园",
+      "polygon": [
+        [
+          98,
+          94
+        ],
+        [
+          148,
+          94
+        ],
+        [
+          148,
+          108
+        ],
+        [
+          98,
+          108
+        ]
+      ]
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "A",
+      "edge": 0,
+      "count": 6,
+      "width": 2.2,
+      "margin": 5,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "A",
+      "edge": 2,
+      "count": 6,
+      "width": 2.2,
+      "margin": 5,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "A",
+      "edge": 1,
+      "count": 2,
+      "width": 1.5,
+      "margin": 5,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "B",
+      "edge": 0,
+      "count": 6,
+      "width": 2.2,
+      "margin": 5,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "B",
+      "edge": 2,
+      "count": 6,
+      "width": 2.2,
+      "margin": 5,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "C",
+      "edge": 0,
+      "count": 5,
+      "width": 1.8,
+      "margin": 4,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "window",
+      "host": "C",
+      "edge": 3,
+      "count": 5,
+      "width": 1.8,
+      "margin": 4,
+      "sill": 0.9,
+      "height": 2.4
+    },
+    {
+      "kind": "opening",
+      "type": "door",
+      "host": "D",
+      "edge": 3,
+      "count": 1,
+      "width": 4,
+      "margin": 8,
+      "sill": 0,
+      "height": 4.5,
+      "level": 0
+    },
+    {
+      "kind": "stair",
+      "name": "A-楼梯",
+      "polygon": [
+        [
+          22,
+          34
+        ],
+        [
+          30,
+          34
+        ],
+        [
+          30,
+          39
+        ],
+        [
+          22,
+          39
+        ]
+      ],
+      "base": 0,
+      "direction": "y"
+    },
+    {
+      "kind": "stair",
+      "name": "B-楼梯",
+      "polygon": [
+        [
+          70,
+          55
+        ],
+        [
+          78,
+          55
+        ],
+        [
+          78,
+          60
+        ],
+        [
+          70,
+          60
+        ]
+      ],
+      "base": 0,
+      "direction": "x"
+    },
+    {
+      "kind": "stair",
+      "name": "C-楼梯",
+      "polygon": [
+        [
+          102,
+          18
+        ],
+        [
+          110,
+          18
+        ],
+        [
+          110,
+          26
+        ],
+        [
+          102,
+          26
+        ]
+      ],
+      "base": 0,
+      "direction": "y"
+    },
+    {
+      "kind": "slab",
+      "name": "A入口雨篷",
+      "polygon": [
+        [
+          20,
+          12
+        ],
+        [
+          60,
+          12
+        ],
+        [
+          60,
+          16
+        ],
+        [
+          20,
+          16
+        ]
+      ],
+      "base": 3.6,
+      "thickness": 0.25
+    },
+    {
+      "kind": "slab",
+      "name": "C入口雨篷",
+      "polygon": [
+        [
+          100,
+          12
+        ],
+        [
+          120,
+          12
+        ],
+        [
+          120,
+          16
+        ],
+        [
+          100,
+          16
+        ]
+      ],
+      "base": 4.2,
+      "thickness": 0.3
+    },
+    {
+      "kind": "slab",
+      "name": "A-B连廊",
+      "polygon": [
+        [
+          24,
+          40
+        ],
+        [
+          34,
+          40
+        ],
+        [
+          34,
+          54
+        ],
+        [
+          24,
+          54
+        ]
+      ],
+      "base": 3.6,
+      "thickness": 0.35
+    },
+    {
+      "kind": "contour",
+      "points": [
+        [
+          98,
+          94
+        ],
+        [
+          108,
+          96
+        ],
+        [
+          118,
+          95
+        ],
+        [
+          128,
+          96
+        ],
+        [
+          140,
+          95
+        ],
+        [
+          148,
+          94
+        ]
+      ],
+      "elevation": 1
+    },
+    {
+      "kind": "contour",
+      "points": [
+        [
+          104,
+          99
+        ],
+        [
+          114,
+          100
+        ],
+        [
+          124,
+          99
+        ],
+        [
+          134,
+          100
+        ],
+        [
+          142,
+          99
+        ]
+      ],
+      "elevation": 2
+    },
+    {
+      "kind": "contour",
+      "points": [
+        [
+          112,
+          103
+        ],
+        [
+          120,
+          104
+        ],
+        [
+          130,
+          103
+        ]
+      ],
+      "elevation": 3
+    }
+  ],
+  "materials": {
+    "concrete": {
+      "color": "#C9C4B8",
+      "roughness": 0.85,
+      "metalness": 0
+    },
+    "brick": {
+      "color": "#B4633F",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "metal_roof": {
+      "color": "#7A8288",
+      "roughness": 0.45,
+      "metalness": 0.65
+    },
+    "glass": {
+      "color": "#9FC4D6",
+      "roughness": 0.12,
+      "metalness": 0.15
+    },
+    "asphalt": {
+      "color": "#4A4A48",
+      "roughness": 0.95,
+      "metalness": 0
+    },
+    "grass": {
+      "color": "#6E8B4B",
+      "roughness": 0.95,
+      "metalness": 0
+    },
+    "water": {
+      "color": "#4E7C95",
+      "roughness": 0.15,
+      "metalness": 0.05
+    },
+    "stone": {
+      "color": "#D6D0C4",
+      "roughness": 0.8,
+      "metalness": 0
+    }
+  },
+  "metrics": {
+    "far": 1.8359,
+    "density": 0.3861,
+    "greenRatio": 0.4651,
+    "parking": {
+      "car": 42,
+      "bike": 260
+    }
+  },
+  "drawings": {
+    "paper": "A1",
+    "siteplan_scale": 500,
+    "plan_scale": 200,
+    "section_scale": 200,
+    "plan_level": 1,
+    "section_from": [
+      0,
+      28
+    ],
+    "section_to": [
+      150,
+      28
+    ]
+  },
+  "limits": {
+    "far": 2.0,
+    "density": 0.4,
+    "green": 0.35,
+    "parking": 40,
+    "source": "示例控规条件（虚构，仅用于演示口径，不代表任何真实地块）",
+    "height_m": 24.0
+  },
+  "interface_map": {
+    "scale": 500,
+    "sheet": "siteplan",
+    "overlays": [
+      "建筑轮廓",
+      "地下室轮廓",
+      "覆土分区",
+      "乔木骨架",
+      "消防车道",
+      "管线走廊",
+      "出入口"
+    ],
+    "note": "建筑-景观接口图：叠加建筑轮廓、地下室范围、覆土厚度分区与乔木骨架，用于校核竖向与种植可行性"
+  },
+  "decisions": {
+    "note": "三栏制：decided 已决策 / pending 待决策 / assumed 假设。深化阶段 pending 已清零，assumed 全部取得书面确认后方可进入施工图。",
+    "decided": [
+      {
+        "id": "D-01",
+        "topic": "规模与控规指标",
+        "decision": "用地 14772 m²；A 1488×4 + B 1488×5 + C 1848×6 + D 880×3 = 27120 m²；FAR 27120/14772 = 1.8359 ≤ 2.0；密度 5704/14772 = 38.61% ≤ 40%；绿地 6870 m² = 46.51% ≥ 35%",
+        "basis": "limits 为示例控规条件（虚构）；算法口径同 references/checklist.md 指标算法"
+      },
+      {
+        "id": "D-02",
+        "topic": "层高与层数",
+        "decision": "统一层高 3.6m（project.level_height）：A 4F=14.4m、B 5F=18.0m、C 6F=21.6m、D 3F=10.8m，均低于 limits.height_m 24.0m",
+        "basis": "masses 的 height 均为 3.6 的整数倍，剖面与层高表一致"
+      },
+      {
+        "id": "D-03",
+        "topic": "模数协调",
+        "decision": "建筑、门窗与铺装统一 300mm 扩大模数：design.module_mm = facade.module_mm = 300；窗宽系列 600 / 1200 / 1800 互为整数倍",
+        "basis": "GB/T 50002-2013《建筑模数协调标准》扩大模数口径"
+      },
+      {
+        "id": "D-04",
+        "topic": "窗宽系列与示例占位差异（待核）",
+        "decision": "[待核] 示例 elements 中 A/B 栋单窗按 2200mm 绘制，属概念阶段占位，不在 300mm 模数系列内；深化立面应按 1800mm 双窗重排，并回改 elements 后同步三张图纸。本次只新增字段，未改动 elements 坐标与门窗尺寸，以保证总平面/平面/剖面与 DXF/GLB 对位",
+        "basis": "facade.windows_mm 与 openings 取标准系列 600/1200/1800；elements 为图纸几何，改动会使三图错位"
+      },
+      {
+        "id": "D-05",
+        "topic": "绿化与停车",
+        "decision": "绿地 6870 m²（46.51%）；机动车 42 位全部地下（地下车库 2112 m²，约 50 m²/位含通道）；非机动车 260 位分 6 处车棚沿主环路西侧（x 80~88）与入口广场东侧布置",
+        "basis": "GB/T 51346-2019《城市绿地规划标准》绿地口径；非机动车配建指标按地方规定[待核]"
+      },
+      {
+        "id": "D-06",
+        "topic": "场地排水",
+        "decision": "雨污分流；场地按 0.3%~0.6% 找坡；5 条路径（4 条地面 + 1 条屋面内排水，见 drainage）全部重力排向南侧市政雨水接口 DN600",
+        "basis": "GB 50037-2013《建筑地面设计规范》地面最小坡度常用控制值；GB 50108-2008《地下工程防水技术规范》地下室防水做法[待核：海绵城市年径流总量控制率由地方确定]"
+      },
+      {
+        "id": "D-07",
+        "topic": "无障碍",
+        "decision": "4 个出入口连续无障碍：E-01 坡度 1:20、E-02 1:20、E-04 1:12，台阶高差 0~8mm；场地最大高差 0.45m 由缓坡消化",
+        "basis": "GB 50763-2012《无障碍设计规范》轮椅坡道坡度常用控制值"
+      },
+      {
+        "id": "D-08",
+        "topic": "覆土与种植",
+        "decision": "地下室顶板覆土 1500mm（basement.cover_mm）；覆土区只植小乔木/灌木/地被，大乔木 1800~2000mm 覆土全部布置在地面层（trees）",
+        "basis": "GB/T 51346-2019 种植土厚度常用控制值[待核：结构荷载按 12 kN/m³ 复核]"
+      },
+      {
+        "id": "D-09",
+        "topic": "室内净高",
+        "decision": "教室 3.6m 层高 − 0.7m 梁高 = 净高 2.9m；走廊吊顶下 2.6m；地下车库行车道 2.6m；门厅两层挑空 6.3m（见 clearances）",
+        "basis": "GB 50352-2019《民用建筑设计统一标准》室内净高常用控制值"
+      },
+      {
+        "id": "D-10",
+        "topic": "日照与光影校核",
+        "decision": "按北纬 30.4° 真太阳时校核 3 个日期 × 3 个时刻（light_checks）；冬至 09:00 与 15:00 高度角 21.0°，用于验证中庭与架空层进深受光；综合楼 C 位于场地东侧，不遮挡 A/B 栋教室南向采光",
+        "basis": "GB 50033-2013《建筑采光设计标准》采光系数口径；GB 50180-2018 日照标准[待核：当地日照分析软件与间距系数]"
+      }
+    ],
+    "pending": [],
+    "assumed": [
+      {
+        "id": "A-01",
+        "topic": "市政雨水接口可重力自排",
+        "assumption": "南侧市政雨水接口管底标高低于场地最低点（-0.45m）不少于 0.6m",
+        "confirmed": true,
+        "confirmed_by": "业主 + 市政部门书面确认",
+        "confirmed_date": "2025-10-20",
+        "note": "[待核：会议纪要与接口管底标高实测值待补]"
+      },
+      {
+        "id": "A-02",
+        "topic": "顶板覆土荷载",
+        "assumption": "顶板覆土 1500mm，种植土按 12 kN/m³ 计，结构顶板按约 18 kN/m² 附加恒载复核",
+        "confirmed": true,
+        "confirmed_by": "结构与景观专业联合确认",
+        "confirmed_date": "2025-10-18",
+        "note": "若局部改种大乔木，须另行复核等效荷载"
+      },
+      {
+        "id": "A-03",
+        "topic": "古树树位与冠幅",
+        "assumption": "西侧草坪现存古树 2 株（约 x=8/y=20、x=12/y=34），冠幅约 8m",
+        "confirmed": true,
+        "confirmed_by": "现场踏勘记录（示例）",
+        "confirmed_date": "2025-10-15",
+        "note": "[待核：树位、树龄与保护等级以园林部门复测为准]"
+      }
+    ]
+  },
+  "references": [
+    {
+      "case_id": "REF-01",
+      "id": "REF-01",
+      "name": "示例案例·城市实验中学教学楼（虚构）",
+      "layer": "结构构造",
+      "source": "[虚构示例] 中小学建筑设计资料集·教学单元",
+      "borrowed": "6.6m 柱网 + 走廊双侧教室的单元组织与预制楼梯段做法",
+      "rewritten": "柱网改为 8400mm 与 300mm 模数对齐；走廊净宽按 2.6m 控制；楼梯改现浇并退出主环路一侧",
+      "note": "只借构造逻辑，不搬立面"
+    },
+    {
+      "case_id": "REF-02",
+      "id": "REF-02",
+      "name": "示例案例·滨河社区学习中心（虚构）",
+      "layer": "空间组织",
+      "source": "[虚构示例] 教育建筑实录·中庭",
+      "borrowed": "中庭串联门厅与二层阅览的竖向流线",
+      "rewritten": "中庭压缩为 6 层通高采光井（宽 9m），与 C 栋核心筒脱开 1.5m 形成防火分隔",
+      "note": "采光井尺度按 1.8359 容积率下的进深复核"
+    },
+    {
+      "case_id": "REF-03",
+      "id": "REF-03",
+      "name": "示例案例·江南院落式小学（虚构）",
+      "layer": "场地关系",
+      "source": "[虚构示例] 校园规划案例集",
+      "borrowed": "院落围合与尽端回车组织",
+      "rewritten": "改为 T 形尽头式消防车道 + 15m×15m 回车场（fire）；院落由 A/B 栋 14m 间距形成，因红线西北角凹口无法成环",
+      "note": "见 fire.loop_note"
+    }
+  ],
+  "drainage": [
+    {
+      "id": "W-01",
+      "area": "入口广场与西侧草坪",
+      "kind": "地面有组织排水",
+      "slopes_pct": [
+        0.5,
+        0.4
+      ],
+      "outfall": "南侧市政雨水接口 DN600（y=0，x≈110）",
+      "reverse_slope": false,
+      "note": "广场 0.5% 找坡至 y=12 雨水口，经 东西主路 0.4% 汇入主环路南端"
+    },
+    {
+      "id": "W-02",
+      "area": "主环路路面（x=92，宽 8m）",
+      "kind": "车行道排水",
+      "slopes_pct": [
+        0.4,
+        0.6
+      ],
+      "outfall": "南端雨水口 → 南侧市政雨水接口 DN600",
+      "reverse_slope": false,
+      "note": "纵横坡同向，纵坡 0.4% 向南、横坡 0.6% 双向"
+    },
+    {
+      "id": "W-03",
+      "area": "综合楼 C 屋面（1848 m²）",
+      "kind": "屋面内排水",
+      "slopes_pct": [
+        1.0
+      ],
+      "outfall": "东侧雨水立管 → 室外雨水井（x≈145）→ 南侧市政雨水接口",
+      "reverse_slope": false,
+      "note": "按 50 年重现期暴雨强度复核立管数量[待核：当地暴雨强度公式]"
+    },
+    {
+      "id": "W-04",
+      "area": "映月池（24..60 / 84..90）",
+      "kind": "景观水体溢流",
+      "slopes_pct": [
+        0.3
+      ],
+      "outfall": "溢流管 → 场地雨水井 → 南侧市政雨水接口",
+      "reverse_slope": false,
+      "note": "常水位低于周边铺装 100mm，溢流口设 2 处"
+    },
+    {
+      "id": "W-05",
+      "area": "东北侧绿地与东区广场边沟",
+      "kind": "地面有组织排水",
+      "slopes_pct": [
+        0.6,
+        0.5
+      ],
+      "outfall": "东区广场边沟 → 主环路东侧雨水口 → 南侧市政雨水接口",
+      "reverse_slope": false,
+      "note": "东区广场位于地下室顶板之上，边沟下设排水层与盲管"
+    }
+  ],
+  "spaces": [
+    {
+      "id": "S-01",
+      "name": "主入口门厅（C 栋南侧，两层挑空）",
+      "public": true,
+      "mass": "C",
+      "net_height_mm": 6300
+    },
+    {
+      "id": "S-02",
+      "name": "综合楼中庭（6 层通高采光井，宽 9m）",
+      "public": true,
+      "mass": "C",
+      "net_height_mm": 21600
+    },
+    {
+      "id": "S-03",
+      "name": "教学楼 A 内走廊（净宽 2.6m）",
+      "public": true,
+      "mass": "A",
+      "net_height_mm": 2600
+    },
+    {
+      "id": "S-04",
+      "name": "体育馆比赛区（D 栋）",
+      "public": true,
+      "mass": "D",
+      "net_height_mm": 8000
+    },
+    {
+      "id": "S-05",
+      "name": "标准教室（A/B 栋，进深 7.8m）",
+      "public": false,
+      "mass": "A/B",
+      "net_height_mm": 2900
+    },
+    {
+      "id": "S-06",
+      "name": "地下车库（C 栋下方，2112 m²，42 位）",
+      "public": false,
+      "mass": "C",
+      "net_height_mm": 2600
+    },
+    {
+      "id": "S-07",
+      "name": "地下设备机房（车库北侧）",
+      "public": false,
+      "mass": "C",
+      "net_height_mm": 2750
+    }
+  ],
+  "sections": [
+    {
+      "id": "1-1",
+      "name": "综合楼横剖",
+      "cuts": [
+        "S-01",
+        "S-02"
+      ],
+      "axis": "x=120，y 10→62",
+      "scale": 200,
+      "shows": [
+        "两层挑空门厅",
+        "6 层采光井",
+        "地下车库顶板覆土 1500mm"
+      ]
+    },
+    {
+      "id": "2-2",
+      "name": "教学楼 A 纵剖",
+      "cuts": [
+        "S-03"
+      ],
+      "axis": "y=28，x 10→85",
+      "scale": 200,
+      "note": "与 drawings.section_from [0,28] → section_to [150,28] 为同一条剖切线"
+    },
+    {
+      "id": "3-3",
+      "name": "体育馆横剖",
+      "cuts": [
+        "S-04"
+      ],
+      "axis": "y=80，x 95→150",
+      "scale": 200,
+      "note": "屋面为 gable 双坡，脊高 10.8 + 4.2 = 15.0m"
+    }
+  ],
+  "fire": {
+    "loop_closed": false,
+    "turnaround": true,
+    "high_side_clear": true,
+    "lane_width_m": 6.0,
+    "slope_pct": 0.6,
+    "turning_radius_m": 12.0,
+    "lane_note": "主环路（x=92，宽 8m，y 3~89）与东西主路（y=47，宽 6m，x 3~88）构成 T 形尽头式消防车道，校核取较小宽度 6.0m；因红线西北角 96m×18m 凹口无法成环，按尽头式处理",
+    "turnaround_note": "主环路北端（x 84~99，y 82~97，15m×15m）设回车场，范围内无乔木、雨棚与停车",
+    "high_side_clear_note": "本项目最高 21.6m < 24m，按多层公共建筑不强制设消防登高操作场地[待核：地方消防审查口径]；如需设置，选 C 栋南侧 8m 宽场地与 D 栋南侧东区广场，15m 范围内无乔木、雨棚与架空层",
+    "basis": "GB 55037-2022《建筑防火通用规范》、GB 50016-2014（2018年版）《建筑设计防火规范》消防车道与回车场常用控制值[待核：消防车道承载与转弯半径由地方消防部门核定]"
+  },
+  "entrances": [
+    {
+      "id": "E-01",
+      "name": "南侧人行主入口",
+      "position": [
+        46,
+        0
+      ],
+      "width_m": 12.0,
+      "kind": "人行",
+      "accessible": true,
+      "step_mm": 0,
+      "ramp_slope": "1:20",
+      "note": "接入口广场（12..80 / 4..12），门厅前 6300mm 净高雨棚下无台阶"
+    },
+    {
+      "id": "E-02",
+      "name": "东侧人行次入口",
+      "position": [
+        150,
+        64
+      ],
+      "width_m": 6.0,
+      "kind": "人行",
+      "accessible": true,
+      "step_mm": 5,
+      "ramp_slope": "1:20",
+      "note": "经 10m 场地通道接东区广场（100..140 / 62..68）"
+    },
+    {
+      "id": "E-03",
+      "name": "南侧车行入口（地下车库坡道）",
+      "position": [
+        92,
+        0
+      ],
+      "width_m": 7.0,
+      "kind": "车行",
+      "accessible": true,
+      "step_mm": 0,
+      "ramp_slope": "1:20",
+      "note": "接主环路南端；车库直线坡道 15%，起终点各设 6m 缓坡段；人行侧设 1:20 无障碍通道"
+    },
+    {
+      "id": "E-04",
+      "name": "西侧后勤出入口",
+      "position": [
+        0,
+        47
+      ],
+      "width_m": 5.0,
+      "kind": "人车混行",
+      "accessible": true,
+      "step_mm": 8,
+      "ramp_slope": "1:12",
+      "note": "接东西主路（y=47）；垃圾与厨房货运错时使用[待核：后勤流线与教学流线的时段隔离由运营方案确定]"
+    }
+  ],
+  "basement": {
+    "outline_inside_redline": true,
+    "min_offset_mm": 6000,
+    "required_offset_mm": 3000,
+    "outline": [
+      [
+        100,
+        18
+      ],
+      [
+        144,
+        18
+      ],
+      [
+        144,
+        66
+      ],
+      [
+        100,
+        66
+      ]
+    ],
+    "area_m2": 2112,
+    "levels": 1,
+    "level_height_m": 4.2,
+    "cover_mm": 1500,
+    "use": "地下车库（42 位，42×50 m²/位）+ 设备机房（约 260 m²）",
+    "offset_basis": "东侧外墙 x=144 距红线 x=150 为 6.0m ≥ 地下管线走廊 3.0m（C-07）；南侧 y=18 距红线 18m；北侧 y=66 距红线 44m",
+    "note": "顶板覆土 1500mm，覆土区（y 58~66 一带的东区广场）只植小乔木与灌木；主环路东边界 x=96 与地下室外墙 x=100 之间留 4m 覆土带"
+  },
+  "trees": [
+    {
+      "id": "T-01",
+      "class": "大乔木",
+      "species": "香樟（保留古树 1）",
+      "position": [
+        8,
+        20
+      ],
+      "soil_depth_mm": 1800,
+      "on_roof": false,
+      "note": "西侧草坪，冠幅 8m，A 栋西墙外 2m 设绿化缓冲"
+    },
+    {
+      "id": "T-02",
+      "class": "大乔木",
+      "species": "银杏（保留古树 2）",
+      "position": [
+        12,
+        34
+      ],
+      "soil_depth_mm": 1800,
+      "on_roof": false,
+      "note": "同上，树池 2.5m×2.5m 透水铺装"
+    },
+    {
+      "id": "T-03",
+      "class": "大乔木",
+      "species": "榉树",
+      "position": [
+        84,
+        60
+      ],
+      "soil_depth_mm": 2000,
+      "on_roof": false,
+      "note": "主环路西侧行道树，避开消防车道净宽"
+    },
+    {
+      "id": "T-04",
+      "class": "大乔木",
+      "species": "朴树",
+      "position": [
+        70,
+        85
+      ],
+      "soil_depth_mm": 1800,
+      "on_roof": false,
+      "note": "映月池东侧，池岸外 10m"
+    },
+    {
+      "id": "T-05",
+      "class": "大乔木",
+      "species": "栾树",
+      "position": [
+        8,
+        60
+      ],
+      "soil_depth_mm": 1800,
+      "on_roof": false,
+      "note": "B 栋西侧，避开西侧后勤出入口"
+    },
+    {
+      "id": "T-06",
+      "class": "小乔木",
+      "species": "樱花",
+      "position": [
+        110,
+        64
+      ],
+      "soil_depth_mm": 900,
+      "on_roof": true,
+      "note": "东区广场北侧，顶板覆土 1500mm 内控 900mm 种植土"
+    },
+    {
+      "id": "T-07",
+      "class": "灌木",
+      "species": "小叶黄杨",
+      "position": [
+        120,
+        60
+      ],
+      "soil_depth_mm": 500,
+      "on_roof": true,
+      "note": "顶板边界绿篱，避开主环路 1.5m"
+    },
+    {
+      "id": "T-08",
+      "class": "地被",
+      "species": "麦冬",
+      "position": [
+        100,
+        64
+      ],
+      "soil_depth_mm": 350,
+      "on_roof": true,
+      "note": "顶板覆土区地被，排水层上 350mm"
+    }
+  ],
+  "clearances": [
+    {
+      "id": "CL-01",
+      "space": "教室",
+      "clear_mm": 2900,
+      "min_mm": 2700,
+      "note": "3.6m 层高 − 0.7m 梁高"
+    },
+    {
+      "id": "CL-02",
+      "space": "内走廊",
+      "clear_mm": 2600,
+      "min_mm": 2400,
+      "note": "吊顶下净高，风管贴梁布置"
+    },
+    {
+      "id": "CL-03",
+      "space": "地下车库行车道",
+      "clear_mm": 2600,
+      "min_mm": 2200,
+      "note": "4.2m 层高 − 0.8m 梁 − 0.8m 管线"
+    },
+    {
+      "id": "CL-04",
+      "space": "地下设备机房",
+      "clear_mm": 2750,
+      "min_mm": 2500,
+      "note": "水泵房与配电间取低值"
+    },
+    {
+      "id": "CL-05",
+      "space": "体育馆比赛区",
+      "clear_mm": 8000,
+      "min_mm": 7000,
+      "note": "屋脊 15.0m，场地净高按篮板上沿控制"
+    },
+    {
+      "id": "CL-06",
+      "space": "主入口门厅",
+      "clear_mm": 6300,
+      "min_mm": 3600,
+      "note": "两层挑空 7.2m − 0.9m 梁"
+    }
+  ],
+  "facade": {
+    "module_mm": 300,
+    "windows_mm": [
+      600,
+      1200,
+      1800
+    ],
+    "beam_aligned": true,
+    "beam_aligned_note": "窗顶标高统一对齐 3.6m 层高的梁底（窗高 2400 + 窗台 900 = 3300，梁高 700 时窗顶距梁底 0）",
+    "materials": [
+      {
+        "name": "清水混凝土",
+        "share": 0.62,
+        "hex": "#C9C4B8",
+        "material": "concrete",
+        "use": "A/B 栋外墙与框架"
+      },
+      {
+        "name": "花岗岩",
+        "share": 0.26,
+        "hex": "#D6D0C4",
+        "material": "stone",
+        "use": "C 栋基座与门厅墙面"
+      },
+      {
+        "name": "幕墙玻璃",
+        "share": 0.1,
+        "hex": "#9FC4D6",
+        "material": "glass",
+        "use": "C 栋幕墙"
+      },
+      {
+        "name": "金属屋面与收边（铝镁锰板）",
+        "share": 0.02,
+        "hex": "#7A8288",
+        "material": "metal_roof",
+        "use": "D 栋双坡屋面与女儿墙收边"
+      }
+    ],
+    "note": "立面以清水混凝土为主色；陶土砖（materials.brick）在 materials 中已定义但本方案未用于立面，计入前须另核色彩占比",
+    "basis": "GB/T 50002-2013《建筑模数协调标准》扩大模数 300mm"
+  },
+  "openings": [
+    {
+      "id": "W-0600",
+      "width_mm": 600,
+      "height_mm": 1200,
+      "sill_mm": 1500,
+      "host": "A/B/C",
+      "use": "卫生间与储藏小窗",
+      "beam_aligned": true
+    },
+    {
+      "id": "W-1200",
+      "width_mm": 1200,
+      "height_mm": 2400,
+      "sill_mm": 900,
+      "host": "A/B/C",
+      "use": "教室侧窗与走廊采光窗",
+      "beam_aligned": true
+    },
+    {
+      "id": "W-1800",
+      "width_mm": 1800,
+      "height_mm": 2400,
+      "sill_mm": 900,
+      "host": "A/B/C",
+      "use": "标准教室主窗（双扇）",
+      "beam_aligned": true
+    }
+  ],
+  "dims_mm": [
+    8400,
+    7800,
+    6300,
+    5400,
+    4200,
+    3600,
+    3300,
+    2700,
+    2400,
+    1800,
+    1200,
+    600
+  ],
+  "module_mm": 300,
+  "light_checks": [
+    {
+      "date": "2025-12-21",
+      "time": "09:00",
+      "sun_altitude_deg": 21.0,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "冬至最低角，验证中庭进深与架空层受光"
+    },
+    {
+      "date": "2025-12-21",
+      "time": "12:00",
+      "sun_altitude_deg": 36.1,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "冬至最低角，验证中庭进深与架空层受光"
+    },
+    {
+      "date": "2025-12-21",
+      "time": "15:00",
+      "sun_altitude_deg": 21.0,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "冬至最低角，验证中庭进深与架空层受光"
+    },
+    {
+      "date": "2026-03-20",
+      "time": "09:00",
+      "sun_altitude_deg": 37.6,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "春分基准"
+    },
+    {
+      "date": "2026-03-20",
+      "time": "12:00",
+      "sun_altitude_deg": 59.6,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "春分基准"
+    },
+    {
+      "date": "2026-03-20",
+      "time": "15:00",
+      "sun_altitude_deg": 37.6,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "春分基准"
+    },
+    {
+      "date": "2026-06-21",
+      "time": "09:00",
+      "sun_altitude_deg": 49.6,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "夏至最高角，验证挑檐与遮阳深度"
+    },
+    {
+      "date": "2026-06-21",
+      "time": "12:00",
+      "sun_altitude_deg": 83.0,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "夏至最高角，验证挑檐与遮阳深度"
+    },
+    {
+      "date": "2026-06-21",
+      "time": "15:00",
+      "sun_altitude_deg": 49.6,
+      "latitude_deg": 30.4,
+      "time_basis": "真太阳时",
+      "check": "夏至最高角，验证挑檐与遮阳深度"
+    }
+  ],
+  "palette": {
+    "hues": 3,
+    "hue_list": [
+      {
+        "family": "中性暖灰",
+        "hex": [
+          "#C9C4B8",
+          "#D6D0C4"
+        ],
+        "share": 0.88,
+        "lstar": [
+          79.2,
+          83.6
+        ],
+        "scope": "立面（清水混凝土 62% + 花岗岩 26%）"
+      },
+      {
+        "family": "青蓝（玻璃本色）",
+        "hex": [
+          "#9FC4D6"
+        ],
+        "share": 0.1,
+        "lstar": [
+          77.1
+        ],
+        "scope": "立面（C 栋幕墙）"
+      },
+      {
+        "family": "冷灰（金属屋面）",
+        "hex": [
+          "#7A8288"
+        ],
+        "share": 0.02,
+        "lstar": [
+          53.9
+        ],
+        "scope": "屋面（不计入立面明度极差）"
+      }
+    ],
+    "main_share": 0.62,
+    "high_sat_share": 0.0,
+    "lightness_range": 6.5,
+    "lightness_range_all": 29.7,
+    "definitions": "main_share = 主色（清水混凝土）占立面面积比；high_sat_share = HSL 饱和度 S≥70% 的高饱和面占比；lightness_range = 立面主色与辅色的 L* 极差；lightness_range_all = 含金属屋面的全色域极差",
+    "note": "立面三色 L* 极差 6.5（≤25）；含金属屋面的全色域极差 29.7 超过 25 的工程惯例建议值，原因是体育馆双坡屋面为材质本色的深灰金属板。若须压到 25 以内，可将屋面改浅灰涂层（L*≥60）[待核：屋面太阳反射率与建筑节能要求的联动]"
+  }
+}

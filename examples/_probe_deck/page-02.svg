@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect x="0" y="0" width="960" height="540" fill="#FBF9F6"/>
+
+  <text x="56" y="72" font-family="SimHei, sans-serif" font-size="37.3" font-weight="bold" fill="#1B2A33">总平面与指标校核</text>
+  <text x="56" y="100" font-family="SimHei, sans-serif" font-size="16" fill="#6B7A82">溪畔社区中心 · 方案设计汇报册</text>
+  <line x1="56" y1="116" x2="904" y2="116" stroke="#D8DFE3" stroke-width="1"/>
+
+  <rect x="64" y="152" width="440" height="300" fill="none" stroke="#D8DFE3" stroke-width="1"/>
+  <rect x="80" y="168" width="408" height="268" fill="none" stroke="#9AA9B0" stroke-width="1" stroke-dasharray="8 4"/>
+
+  <rect x="112" y="196" width="196" height="132" fill="#DCE7E4" stroke="#2F6F6B" stroke-width="1.5"/>
+  <rect x="308" y="196" width="92" height="132" fill="#DCE7E4" stroke="#2F6F6B" stroke-width="1.5"/>
+  <rect x="132" y="216" width="156" height="92" fill="#FAF7F1" stroke="#2F6F6B" stroke-width="1" stroke-dasharray="4 3"/>
+  <rect x="112" y="344" width="288" height="52" fill="#EFE7DA"/>
+
+  <text x="112" y="188" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">主楼三层</text>
+  <text x="308" y="188" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">翼楼</text>
+  <text x="210" y="268" font-family="SimHei, sans-serif" font-size="16" fill="#1B2A33" text-anchor="middle">庭院</text>
+  <text x="256" y="376" font-family="SimHei, sans-serif" font-size="16" fill="#1B2A33" text-anchor="middle">社区广场</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C25B3A"/>
+    </marker>
+  </defs>
+  <line x1="256" y1="436" x2="256" y2="398" stroke="#C25B3A" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="272" y="424" font-family="SimHei, sans-serif" font-size="14.67" fill="#C25B3A">主入口</text>
+
+  <circle cx="460" cy="204" r="18" fill="#FAF7F1" stroke="#9AA9B0" stroke-width="1"/>
+  <path d="M 460 190 L 452 212 L 460 207 L 468 212 Z" fill="#1B2A33"/>
+  <text x="434" y="210" font-family="SimHei, sans-serif" font-size="13.3" fill="#6B7A82" text-anchor="end">北</text>
+  <text x="64" y="472" font-family="SimHei, sans-serif" font-size="13.3" fill="#6B7A82">平面示意 ／ 比例 1:500</text>
+
+  <text x="560" y="146" font-family="SimHei, sans-serif" font-size="16" font-weight="bold" fill="#1B2A33">指标校核表（方案设计阶段）</text>
+
+  <rect x="560" y="160" width="160" height="32" fill="#1B2A33"/>
+  <rect x="720" y="160" width="96" height="32" fill="#1B2A33"/>
+  <rect x="816" y="160" width="88" height="32" fill="#1B2A33"/>
+  <text x="572" y="181" font-family="SimHei, sans-serif" font-size="14.67" fill="#FBF9F6">指标名称</text>
+  <text x="732" y="181" font-family="SimHei, sans-serif" font-size="14.67" fill="#FBF9F6">数值</text>
+  <text x="828" y="181" font-family="SimHei, sans-serif" font-size="14.67" fill="#FBF9F6">校核</text>
+
+  <rect x="560" y="192" width="160" height="32" fill="#F1EEE8"/>
+  <rect x="720" y="192" width="96" height="32" fill="#F1EEE8"/>
+  <rect x="816" y="192" width="88" height="32" fill="#F1EEE8"/>
+  <text x="572" y="213" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">用地面积</text>
+  <text x="732" y="213" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">17,962 m²</text>
+  <text x="828" y="213" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">合规</text>
+
+  <rect x="560" y="224" width="160" height="32" fill="#FAF7F1"/>
+  <rect x="720" y="224" width="96" height="32" fill="#FAF7F1"/>
+  <rect x="816" y="224" width="88" height="32" fill="#FAF7F1"/>
+  <text x="572" y="245" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">建筑密度</text>
+  <text x="732" y="245" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">17.4%</text>
+  <text x="828" y="245" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">合规</text>
+
+  <rect x="560" y="256" width="160" height="32" fill="#F1EEE8"/>
+  <rect x="720" y="256" width="96" height="32" fill="#F1EEE8"/>
+  <rect x="816" y="256" width="88" height="32" fill="#F1EEE8"/>
+  <text x="572" y="277" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">容积率</text>
+  <text x="732" y="277" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">0.68</text>
+  <text x="828" y="277" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">合规</text>
+
+  <rect x="560" y="288" width="160" height="32" fill="#FAF7F1"/>
+  <rect x="720" y="288" width="96" height="32" fill="#FAF7F1"/>
+  <rect x="816" y="288" width="88" height="32" fill="#FAF7F1"/>
+  <text x="572" y="309" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">绿地率</text>
+  <text x="732" y="309" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">36.2%</text>
+  <text x="828" y="309" font-family="SimHei, sans-serif" font-size="14.67" fill="#1B2A33">达标</text>
+
+  <text x="560" y="352" font-family="SimHei, sans-serif" font-size="14.67" fill="#6B7A82">校核依据：GB 50352、GB 50180、GB 50838</text>
+  <text x="560" y="382" font-family="SimHei, sans-serif" font-size="14.67" fill="#6B7A82">缺口一：消防车道转弯半径尚未复核</text>
+  <text x="560" y="412" font-family="SimHei, sans-serif" font-size="14.67" fill="#6B7A82">缺口二：日照分析与容积率奖励条款待补</text>
+</svg>

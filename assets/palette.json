@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "colors": {
+    "ink": {
+      "hex": "#111111",
+      "cmyk": [
+        0,
+        0,
+        0,
+        93
+      ],
+      "gray_luma": 0.0056,
+      "purpose": "文字、尺寸数字、图名、剖断实填；全图最深值，只用于承载信息的部分",
+      "mono_safe": true,
+      "mono_note": "可。灰度 luma 0.006，是全部色值中最深的一档，与任何其他色都可拉开至少 0.23 的明度差"
+    },
+    "line_heavy": {
+      "hex": "#1F1F1F",
+      "cmyk": [
+        0,
+        0,
+        0,
+        88
+      ],
+      "gray_luma": 0.0137,
+      "purpose": "L1 线：建筑/场地外轮廓、剖断线、用地红线（红线可用加深至 0.90mm 线宽）",
+      "mono_safe": true,
+      "mono_note": "可。与 ink 明度差 0.008，二者靠线宽与用途区分，不靠色"
+    },
+    "line_mid": {
+      "hex": "#595959",
+      "cmyk": [
+        0,
+        0,
+        0,
+        65
+      ],
+      "gray_luma": 0.0999,
+      "purpose": "L2 线：主要空间边界、结构构件、楼板线、水岸线",
+      "mono_safe": true,
+      "mono_note": "可。与 line_heavy 明度差 0.086，黑白打印可分辨"
+    },
+    "line_light": {
+      "hex": "#A6A6A6",
+      "cmyk": [
+        0,
+        0,
+        0,
+        35
+      ],
+      "gray_luma": 0.3813,
+      "purpose": "L3/L4 线：次要构件、门窗、家具、铺装分格、填充与纹理",
+      "mono_safe": true,
+      "mono_note": "可，但线宽须 ≥0.18mm；0.09mm 线在黑白激光输出上会断线"
+    },
+    "water": {
+      "hex": "#9EC4D8",
+      "cmyk": [
+        27,
+        9,
+        0,
+        15
+      ],
+      "gray_luma": 0.5171,
+      "purpose": "水面、水景、湿地水体；水岸线用 line_mid 而非本色",
+      "mono_safe": false,
+      "mono_note": "不可单靠颜色。与 plant 的灰度仅差 0.034，黑白打印后水面与绿地无法区分；必须叠加水面纹理（水平细线间隔 1.5mm 或点阵）"
+    },
+    "plant": {
+      "hex": "#A8C09A",
+      "cmyk": [
+        12,
+        0,
+        20,
+        25
+      ],
+      "gray_luma": 0.4836,
+      "purpose": "绿地、种植面积、乔木冠层色块",
+      "mono_safe": false,
+      "mono_note": "不可单靠颜色。与 water 灰度仅差 0.034；须用植被纹理（随机点簇或树冠轮廓线）区分"
+    },
+    "building": {
+      "hex": "#8C8C8C",
+      "cmyk": [
+        0,
+        0,
+        0,
+        45
+      ],
+      "gray_luma": 0.2623,
+      "purpose": "建筑屋面、体量填充；周边现状建筑用 variants 中的浅灰",
+      "mono_safe": true,
+      "mono_note": "可。注意与 accent 的灰度仅差 0.026：同图出现时须给 accent 加斜线填充",
+      "variants": [
+        {
+          "hex": "#BDBDBD",
+          "cmyk": [
+            0,
+            0,
+            0,
+            26
+          ],
+          "gray_luma": 0.5089,
+          "note": "周边现状建筑/城市肌理底图"
+        }
+      ]
+    },
+    "paving": {
+      "hex": "#D9D2C7",
+      "cmyk": [
+        0,
+        3,
+        8,
+        15
+      ],
+      "gray_luma": 0.6497,
+      "purpose": "硬质铺装、广场、园路、停车位面层",
+      "mono_safe": true,
+      "mono_note": "可。是实体面中最浅一档（luma 0.650），与 building 拉开 0.39"
+    },
+    "accent": {
+      "hex": "#B07A4A",
+      "cmyk": [
+        0,
+        31,
+        58,
+        31
+      ],
+      "gray_luma": 0.2364,
+      "purpose": "一图一主题色：强调元素、分析图中的主题量、图注重点",
+      "mono_safe": false,
+      "mono_note": "不可单靠颜色。与 building 灰度仅差 0.026；黑白打印时须改为深灰实填 + 白描边或斜线纹理",
+      "variants": [
+        {
+          "hex": "#4A6B52",
+          "cmyk": [
+            31,
+            0,
+            23,
+            58
+          ],
+          "gray_luma": 0.1258,
+          "note": "墨绿备选主题色（源文件给出的第二个强调色），灰度更深，黑白更安全"
+        }
+      ]
+    },
+    "bg": {
+      "hex": "#FFFFFF",
+      "cmyk": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gray_luma": 1,
+      "purpose": "图面底色（白底）；分析图底图用 variants 中的场地灰",
+      "mono_safe": true,
+      "mono_note": "可。白底在黑白与彩色输出下一致",
+      "variants": [
+        {
+          "hex": "#F2F2F2",
+          "cmyk": [
+            0,
+            0,
+            0,
+            5
+          ],
+          "gray_luma": 0.8879,
+          "note": "场地底色（分析图底图，压 30%–40% 透明）"
+        }
+      ]
+    }
+  },
+  "category_scale": {
+    "note": "类别量（≤6 类）专用色盲安全色，取自 Okabe-Ito 方案；连续量禁止使用本组，改用单色 5 级顺序色阶",
+    "colors": [
+      {
+        "name": "蓝",
+        "hex": "#0072B2",
+        "cmyk": [
+          100,
+          36,
+          0,
+          30
+        ],
+        "gray_luma": 0.1525
+      },
+      {
+        "name": "橙",
+        "hex": "#E69F00",
+        "cmyk": [
+          0,
+          31,
+          100,
+          10
+        ],
+        "gray_luma": 0.4162
+      },
+      {
+        "name": "蓝绿",
+        "hex": "#009E73",
+        "cmyk": [
+          100,
+          0,
+          27,
+          38
+        ],
+        "gray_luma": 0.2569
+      },
+      {
+        "name": "紫红",
+        "hex": "#CC79A7",
+        "cmyk": [
+          0,
+          41,
+          18,
+          20
+        ],
+        "gray_luma": 0.293
+      },
+      {
+        "name": "天蓝",
+        "hex": "#56B4E9",
+        "cmyk": [
+          63,
+          23,
+          0,
+          9
+        ],
+        "gray_luma": 0.405
+      },
+      {
+        "name": "朱红",
+        "hex": "#D55E00",
+        "cmyk": [
+          0,
+          56,
+          100,
+          16
+        ],
+        "gray_luma": 0.2215
+      }
+    ]
+  },
+  "colorblind_safety": {
+    "method": "判定依据：各色灰度 luma（0=黑，1=白）之差 + 色相轴在对应障碍下的塌陷方向。luma 差 <0.10 判为「不可分辨」，0.10–0.18 判为「边界」，>0.18 判为「可分辨」。本环境无第三方模拟库，判据用明度差 + 图案冗余兜底，不伪造模拟图。",
+    "deficiencies": {
+      "protanopia": {
+        "name": "红色盲（缺红锥）",
+        "axis_lost": "红—绿轴塌陷，红色显著变暗"
+      },
+      "deuteranopia": {
+        "name": "绿色盲（缺绿锥）",
+        "axis_lost": "红—绿轴塌陷，红绿同明度时不可分"
+      },
+      "tritanopia": {
+        "name": "蓝色盲（缺蓝锥）",
+        "axis_lost": "蓝—黄轴塌陷，蓝与黄褐相混"
+      }
+    },
+    "pairs": [
+      {
+        "pair": "water / plant",
+        "luma_gap": 0.034,
+        "protanopia": "不可分辨",
+        "deuteranopia": "不可分辨",
+        "tritanopia": "不可分辨",
+        "fallback": "水面用水平细线填充（间隔 1.5mm），绿地用点簇或树冠轮廓线；图例同时用文字标注，不只给色块"
+      },
+      {
+        "pair": "accent / building",
+        "luma_gap": 0.026,
+        "protanopia": "不可分辨",
+        "deuteranopia": "不可分辨",
+        "tritanopia": "边界（赭黄在蓝黄轴塌陷后偏向灰）",
+        "fallback": "accent 一律加 45° 斜线纹理（间隔 2mm）+ 白描边；或改用 accent.variants 的墨绿 #4A6B52（luma 0.126，与 building 差 0.136）"
+      },
+      {
+        "pair": "accent / ink",
+        "luma_gap": 0.231,
+        "protanopia": "可分辨",
+        "deuteranopia": "可分辨",
+        "tritanopia": "可分辨",
+        "fallback": "无需额外处理；accent 面积仍须 ≤15%"
+      },
+      {
+        "pair": "water / paving",
+        "luma_gap": 0.133,
+        "protanopia": "边界",
+        "deuteranopia": "边界",
+        "tritanopia": "边界",
+        "fallback": "水面加水平线填充；铺装保持无纹理实填，两者不靠色相区分"
+      },
+      {
+        "pair": "plant / paving",
+        "luma_gap": 0.166,
+        "protanopia": "边界",
+        "deuteranopia": "边界",
+        "tritanopia": "边界",
+        "fallback": "绿地用点簇纹理；铺装留空"
+      },
+      {
+        "pair": "category_scale 蓝 #0072B2 / 朱红 #D55E00",
+        "luma_gap": 0.069,
+        "protanopia": "不可分辨",
+        "deuteranopia": "不可分辨",
+        "tritanopia": "可分辨",
+        "fallback": "六类色必须同时用形状/纹理（图案填充、不同箭头、编号）区分；不得只靠 category_scale 取色"
+      },
+      {
+        "pair": "category_scale 蓝绿 #009E73 / 紫红 #CC79A7",
+        "luma_gap": 0.036,
+        "protanopia": "边界",
+        "deuteranopia": "不可分辨",
+        "tritanopia": "可分辨",
+        "fallback": "同上：形状或纹理冗余；顺序色阶场景改用单色 5 级"
+      }
+    ],
+    "hard_rules": [
+      "红/绿对立不得承载「好/坏」「达标/不达标」的语义；必须用文字、符号或线型同时表达",
+      "任何依赖色相差 <0.10 luma 的组对，必须在同一张图上提供非颜色的冗余编码（纹理、线型、编号、直接标注）",
+      "类别量 >6 类时停止加色，改用纹理与形状",
+      "全部图件出图前做灰度转换测试：转灰度后仍能读出每一组语义，否则返工"
+    ]
+  },
+  "rules": [
+    "一图一主题色：accent 每张图只能承担一个语义，饱和面积占图面 ≤15%",
+    "连续量（日照时数、噪声级、风速比、坡度）用单色 5 级顺序色阶（同一色相由浅到深），禁止彩虹色阶",
+    "类别量 ≤6 类用 category_scale；>6 类改用纹理与形状，不再加色",
+    "同一视野内高饱和（HSB 中 S>60%）面积 ≤10%；色彩从场地取样（土壤、岩石、植被、既有建筑）",
+    "全部图件必须通过灰度打印测试：去掉颜色后主次关系仍成立",
+    "线宽与颜色分工：线宽承担层级，颜色承担语义；禁止用颜色区分线宽层级，也禁止用线宽区分类别"
+  ]
+}

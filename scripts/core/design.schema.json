@@ -1,0 +1,1571 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dsh.local/arch-env-design/design.schema.json",
+  "title": "ArchEnvDesign Project (single source of truth)",
+  "description": "建筑与环境设计项目的单一真相源。所有脚本（design_io / dxf_export / gltf_export / svg_draw / to_pdf）只读这一份文件。长度单位统一为米(m)，角度为度(deg)，平面坐标为世界坐标且 +Y 指北；键名带 _mm 后缀的以毫米计（dims_mm / module_mm / *_mm 字段）。",
+  "type": "object",
+  "required": [
+    "project",
+    "site",
+    "masses",
+    "materials"
+  ],
+  "additionalProperties": true,
+  "definitions": {
+    "point": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "number"
+      },
+      "description": "[x, y]，单位 m"
+    },
+    "polygon": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "$ref": "#/definitions/point"
+      },
+      "description": "闭合多边形顶点序列，首尾不必重复。允许凹多边形，不允许自相交。"
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$"
+    }
+  },
+  "properties": {
+    "project": {
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "standards",
+        "units"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "住宅",
+            "公建",
+            "校园",
+            "街区",
+            "滨水",
+            "公园"
+          ]
+        },
+        "standards": {
+          "enum": [
+            "CN",
+            "INTL"
+          ],
+          "description": "CN=中国规范语境，INTL=国际/泛用"
+        },
+        "units": {
+          "const": "m"
+        },
+        "level_height": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 3.6,
+          "description": "标准层高 m，用于层数与建筑面积换算"
+        },
+        "level_height_note": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "drawing_number": {
+          "type": "string"
+        }
+      }
+    },
+    "site": {
+      "type": "object",
+      "required": [
+        "boundary",
+        "north_deg",
+        "setbacks",
+        "levels"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "boundary": {
+          "$ref": "#/definitions/polygon"
+        },
+        "north_deg": {
+          "type": "number",
+          "default": 0,
+          "description": "指北针相对图面 +Y 的顺时针旋转角。0=正北朝上，90=北朝右"
+        },
+        "setbacks": {
+          "type": "object",
+          "required": [
+            "front",
+            "back",
+            "left",
+            "right"
+          ],
+          "additionalProperties": false,
+          "description": "建筑退线，按用地边界外包矩形的方位计算：front=南(min y)、back=北(max y)、left=西(min x)、right=东(max x)",
+          "properties": {
+            "front": {
+              "type": "number",
+              "minimum": 0
+            },
+            "back": {
+              "type": "number",
+              "minimum": 0
+            },
+            "left": {
+              "type": "number",
+              "minimum": 0
+            },
+            "right": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        },
+        "levels": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "elevation"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "elevation": {
+                "type": "number",
+                "description": "绝对标高 m，与 design 的 z 值一致"
+              }
+            }
+          }
+        },
+        "datum_note": {
+          "type": "string"
+        }
+      }
+    },
+    "masses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "footprint",
+          "base",
+          "height",
+          "roof",
+          "material"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "中文功能名，用于图面标注"
+          },
+          "footprint": {
+            "$ref": "#/definitions/polygon"
+          },
+          "base": {
+            "type": "number",
+            "default": 0
+          },
+          "height": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "檐口/屋面起始高度（相对 base），不含 roof_rise"
+          },
+          "roof": {
+            "enum": [
+              "flat",
+              "gable",
+              "shed"
+            ]
+          },
+          "roof_rise": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0,
+            "description": "坡屋顶矢高 m；gable 沿长轴起脊，shed 沿短轴单向起坡"
+          },
+          "overhang": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0,
+            "description": "挑檐外伸 m，平面图中以虚线表达上方悬挑"
+          },
+          "material": {
+            "type": "string"
+          },
+          "storeys": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "可选，覆盖按 height/level_height 推出的层数"
+          },
+          "label_offset": {
+            "$ref": "#/definitions/point"
+          }
+        }
+      }
+    },
+    "elements": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "additionalProperties": true,
+        "oneOf": [
+          {
+            "properties": {
+              "kind": {
+                "const": "wall"
+              },
+              "points": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "$ref": "#/definitions/point"
+                }
+              },
+              "base": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              },
+              "thickness": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "points"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "slab"
+              },
+              "polygon": {
+                "$ref": "#/definitions/polygon"
+              },
+              "base": {
+                "type": "number"
+              },
+              "thickness": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "polygon",
+              "base"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "column"
+              },
+              "center": {
+                "$ref": "#/definitions/point"
+              },
+              "radius": {
+                "type": "number"
+              },
+              "base": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "center"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "opening"
+              },
+              "type": {
+                "enum": [
+                  "window",
+                  "door"
+                ]
+              },
+              "host": {
+                "type": "string",
+                "description": "参数式：所属 mass id"
+              },
+              "edge": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "参数式：mass footprint 的边索引"
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "margin": {
+                "type": "number",
+                "minimum": 0
+              },
+              "sill": {
+                "type": "number",
+                "minimum": 0
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "level": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "description": "层索引；null/省略表示各层重复"
+              },
+              "points": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "$ref": "#/definitions/point"
+                },
+                "description": "显式式：opening 宽度区间 [p0,p1]"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "path"
+              },
+              "points": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "$ref": "#/definitions/point"
+                }
+              },
+              "width": {
+                "type": "number"
+              },
+              "surface": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "points",
+              "width"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "tree"
+              },
+              "center": {
+                "$ref": "#/definitions/point"
+              },
+              "radius": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              },
+              "species": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "center"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "water"
+              },
+              "polygon": {
+                "$ref": "#/definitions/polygon"
+              }
+            },
+            "required": [
+              "kind",
+              "polygon"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "plaza"
+              },
+              "polygon": {
+                "$ref": "#/definitions/polygon"
+              },
+              "surface": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "polygon"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "green"
+              },
+              "polygon": {
+                "$ref": "#/definitions/polygon"
+              },
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "polygon"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "contour"
+              },
+              "points": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "$ref": "#/definitions/point"
+                }
+              },
+              "elevation": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "kind",
+              "points",
+              "elevation"
+            ]
+          },
+          {
+            "properties": {
+              "kind": {
+                "const": "stair"
+              },
+              "polygon": {
+                "$ref": "#/definitions/polygon"
+              },
+              "base": {
+                "type": "number"
+              },
+              "direction": {
+                "enum": [
+                  "x",
+                  "y"
+                ]
+              }
+            },
+            "required": [
+              "kind",
+              "polygon",
+              "base"
+            ]
+          }
+        ]
+      }
+    },
+    "materials": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^.+$": {
+          "type": "object",
+          "required": [
+            "color",
+            "roughness",
+            "metalness"
+          ],
+          "additionalProperties": true,
+          "properties": {
+            "color": {
+              "$ref": "#/definitions/color"
+            },
+            "roughness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "metalness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "可空；由 design_io.py check --json 计算并可用 backfill 回填",
+      "additionalProperties": true,
+      "properties": {
+        "far": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "density": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "greenRatio": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "parking": {
+          "type": [
+            "number",
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "drawings": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "出图默认参数，可被 CLI 覆盖",
+      "properties": {
+        "paper": {
+          "enum": [
+            "A1",
+            "A2",
+            "A3"
+          ]
+        },
+        "siteplan_scale": {
+          "type": "integer"
+        },
+        "plan_scale": {
+          "type": "integer"
+        },
+        "section_scale": {
+          "type": "integer"
+        },
+        "section_from": {
+          "$ref": "#/definitions/point"
+        },
+        "section_to": {
+          "$ref": "#/definitions/point"
+        },
+        "plan_level": {
+          "type": "integer"
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "far",
+        "density",
+        "green",
+        "parking"
+      ],
+      "additionalProperties": true,
+      "description": "控规/规划条件上限值，由 checklist.py 的 design_limits() 读取并与 core 实测指标比对（PLAN-FAR/DENSITY/GREEN/PARK-01）。密度与绿地率写 0.40 或 40 均可，脚本把 ≤1.0 的值 ×100 归一成百分数。",
+      "properties": {
+        "far": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "容积率上限，无量纲"
+        },
+        "density": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "建筑密度上限：0.40 或 40（%）"
+        },
+        "green": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "绿地率下限：0.35 或 35（%）"
+        },
+        "parking": {
+          "type": [
+            "number",
+            "object"
+          ],
+          "description": "配建机动车位要求，可写车位数或 {car,bike} 对象"
+        },
+        "source": {
+          "type": "string",
+          "description": "限值出处（出让条件/控规图则编号）"
+        },
+        "height_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "控规限高，单位 m。checklist.py 不直接读取，仅供限高校核与图纸标注"
+        }
+      }
+    },
+    "demo_notice": {
+      "type": "object",
+      "required": [
+        "fictional"
+      ],
+      "additionalProperties": true,
+      "description": "示例工程的虚构声明块。checklist.py 不读取本块，写进 schema 是为了统一「虚构演示数据」的标注口径，避免示例数值被当成真实依据。",
+      "properties": {
+        "fictional": {
+          "type": "boolean",
+          "const": true,
+          "description": "固定为 true：本工程数据全部虚构，不得作为真实项目依据"
+        },
+        "badge": {
+          "type": "string",
+          "description": "图面与文档必须携带的角标文案"
+        },
+        "summary": {
+          "type": "string",
+          "description": "虚构范围清单：哪些块是虚构的"
+        },
+        "prohibited_use": {
+          "type": "string",
+          "description": "禁止用途声明"
+        },
+        "self_consistent_figures": {
+          "type": "string",
+          "description": "自洽数值表：用地/计容面积/FAR/密度/绿地/车位/最高高度，用于人工抽查"
+        },
+        "assumptions": {
+          "type": "string",
+          "description": "计算前提与待核事项"
+        },
+        "version_note": {
+          "type": "string",
+          "description": "本轮补全说明：改了哪些块、哪些保持原值"
+        }
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "required": [
+        "decided",
+        "pending",
+        "assumed"
+      ],
+      "additionalProperties": true,
+      "description": "决策三分记录（PLAN-PROG-01）。checklist.py 只读 assumed[] 的 confirmed 与 pending[] 的条目数；decided[] 供汇报与追溯，不参与判定。",
+      "properties": {
+        "note": {
+          "type": "string",
+          "description": "三栏制的用法说明"
+        },
+        "decided": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "decision"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "决策编号，如 D-01"
+              },
+              "topic": {
+                "type": "string",
+                "description": "决策主题"
+              },
+              "decision": {
+                "type": "string",
+                "description": "决定的内容，须写具体数值与算式"
+              },
+              "basis": {
+                "type": "string",
+                "description": "依据：规范条文、控规条件或算例"
+              }
+            }
+          }
+        },
+        "pending": {
+          "type": "array",
+          "description": "未定项；非空时 PLAN-PROG-01 报 WARN，阶段汇报前须逐条拍板",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "question"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "未定项编号"
+              },
+              "question": {
+                "type": "string",
+                "description": "待定的问题"
+              },
+              "owner": {
+                "type": "string",
+                "description": "拍板责任人"
+              }
+            }
+          }
+        },
+        "assumed": {
+          "type": "array",
+          "description": "假设项；任一条 confirmed 不为 true 时 PLAN-PROG-01 判 FAIL",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "assumption",
+              "confirmed"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "description": "假设项编号，如 A-01；规则显示名取 id 或 question"
+              },
+              "topic": {
+                "type": "string",
+                "description": "假设主题"
+              },
+              "assumption": {
+                "type": "string",
+                "description": "假设成立的内容与数值"
+              },
+              "confirmed": {
+                "type": "boolean",
+                "description": "是否已取得书面确认；false 或缺省即判 FAIL"
+              },
+              "confirmed_by": {
+                "type": "string",
+                "description": "确认方"
+              },
+              "confirmed_date": {
+                "type": "string",
+                "description": "确认日期，ISO 8601（YYYY-MM-DD）"
+              },
+              "note": {
+                "type": "string",
+                "description": "遗留待核事项"
+              }
+            }
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "maxItems": 3,
+      "description": "先例引用（PLAN-CASE-01）：≤3 个，每个必须写明借了哪一层、改写了什么；超过 3 个判 FAIL。",
+      "items": {
+        "type": "object",
+        "required": [
+          "case_id",
+          "layer",
+          "rewritten"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "case_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "案例编号；规则取 case_id 或 id"
+          },
+          "id": {
+            "type": "string",
+            "description": "案例编号别名"
+          },
+          "name": {
+            "type": "string",
+            "description": "案例名称"
+          },
+          "layer": {
+            "enum": [
+              "结构构造",
+              "空间组织",
+              "场地关系",
+              "材料细节",
+              "运营时间"
+            ],
+            "description": "借的是哪一层，必须是这 5 个类目之一；同一层重复会 WARN"
+          },
+          "source": {
+            "type": "string",
+            "description": "案例出处"
+          },
+          "borrowed": {
+            "type": "string",
+            "description": "借用了什么"
+          },
+          "rewritten": {
+            "type": "string",
+            "minLength": 1,
+            "description": "改写了什么；空值视为抄袭风险，判 FAIL"
+          },
+          "note": {
+            "type": "string",
+            "description": "备注"
+          }
+        }
+      }
+    },
+    "interface_map": {
+      "type": "object",
+      "required": [
+        "scale",
+        "overlays"
+      ],
+      "additionalProperties": true,
+      "description": "1:500 建筑-景观接口图（PLAN-XLAY-01）。overlays 里必须同时出现乔木/管线/顶板（或 basement、地下室、roof）三类叠合底图，缺一类即 WARN。",
+      "properties": {
+        "scale": {
+          "type": [
+            "integer",
+            "string"
+          ],
+          "description": "接口图比例，写整数 500 或字符串 \"1:500\"；规则只认 1:500"
+        },
+        "sheet": {
+          "type": "string",
+          "description": "所挂图幅，如 siteplan"
+        },
+        "overlays": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "叠合底图清单；须覆盖乔木定位、综合管线、地下室顶板三张"
+        },
+        "note": {
+          "type": "string",
+          "description": "接口图用途说明"
+        }
+      }
+    },
+    "drainage": {
+      "type": "array",
+      "description": "雨水路径表（PLAN-DRAIN-01）：每条路径须闭合到雨水口或市政接口，任一条反坡或无数值出口即判 FAIL。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "slopes_pct",
+          "outfall",
+          "reverse_slope"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "路径编号，如 W-01"
+          },
+          "area": {
+            "type": "string",
+            "description": "汇水范围描述"
+          },
+          "kind": {
+            "type": "string",
+            "description": "排水类型，如 地面有组织排水 / 车行道排水 / 屋面内排水 / 景观水体溢流"
+          },
+          "slopes_pct": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "number",
+              "minimum": 0
+            },
+            "description": "坡度百分数列表，如 [0.4, 0.6]；任一值 <0 视为反坡，判 FAIL"
+          },
+          "outfall": {
+            "type": "string",
+            "minLength": 1,
+            "description": "出口：雨水口或市政接口（规则也接受 outlet/出口 别名）"
+          },
+          "reverse_slope": {
+            "type": "boolean",
+            "description": "是否存在反坡；true 即判 FAIL"
+          },
+          "note": {
+            "type": "string",
+            "description": "找坡与汇水说明"
+          }
+        }
+      }
+    },
+    "spaces": {
+      "type": "array",
+      "description": "主要空间清单（PLAN-SECT-01）：public 为 true（或缺省且名称含 门厅/中庭/楼梯 等关键词）的空间必须被至少一条 sections[].cuts 覆盖。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "空间编号，如 S-01；sections[].cuts 用这个 id 引用"
+          },
+          "name": {
+            "type": "string",
+            "description": "空间名称与关键尺寸"
+          },
+          "public": {
+            "type": "boolean",
+            "description": "是否公共空间；缺省时按名称关键词判定（规则也接受 is_public/公共 别名）"
+          },
+          "mass": {
+            "type": "string",
+            "description": "所属体量 id，可为 A/B 表示多栋"
+          },
+          "net_height_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "净高，单位 mm"
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "description": "剖面清单（PLAN-SECT-01）：cuts 列出被剖到的空间 id，须覆盖全部公共空间。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "cuts"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "剖面编号，如 1-1"
+          },
+          "name": {
+            "type": "string",
+            "description": "剖面名称"
+          },
+          "cuts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "被剖到的 spaces[].id 列表（规则也接受 spaces/穿过空间 别名）"
+          },
+          "axis": {
+            "type": "string",
+            "description": "剖切线位置，如 \"x=120，y 10→62\"（米）"
+          },
+          "scale": {
+            "type": "integer",
+            "description": "剖面比例分母，如 200 表示 1:200"
+          },
+          "shows": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "该剖面要说明的要点"
+          },
+          "note": {
+            "type": "string",
+            "description": "备注，如与 drawings 剖切线的对应关系"
+          }
+        }
+      }
+    },
+    "fire": {
+      "type": "object",
+      "required": [
+        "loop_closed",
+        "turnaround",
+        "high_side_clear",
+        "lane_width_m",
+        "slope_pct"
+      ],
+      "additionalProperties": true,
+      "description": "消防车道与登高面（PLAN-FIRE-01）：不闭合且无回车场判 FAIL；high_side_clear 为 false 判 FAIL；净宽 <4m 或登高面坡度 >3% 判 WARN。",
+      "properties": {
+        "loop_closed": {
+          "type": "boolean",
+          "description": "消防车道是否成环"
+        },
+        "turnaround": {
+          "type": "boolean",
+          "description": "尽头式车道是否设回车场"
+        },
+        "high_side_clear": {
+          "type": "boolean",
+          "description": "登高操作面一侧是否无雨棚/乔木/架空层遮挡"
+        },
+        "lane_width_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "车道净宽，单位 m（多段取较小值）"
+        },
+        "slope_pct": {
+          "type": "number",
+          "minimum": 0,
+          "description": "登高面坡度，单位 %"
+        },
+        "turning_radius_m": {
+          "type": "number",
+          "minimum": 0,
+          "description": "转弯半径，单位 m"
+        },
+        "lane_note": {
+          "type": "string",
+          "description": "车道走向与校核取值说明"
+        },
+        "turnaround_note": {
+          "type": "string",
+          "description": "回车场位置与尺寸说明"
+        },
+        "high_side_clear_note": {
+          "type": "string",
+          "description": "登高面判定说明与地方口径待核事项"
+        },
+        "basis": {
+          "type": "string",
+          "description": "规范依据"
+        }
+      }
+    },
+    "entrances": {
+      "type": "array",
+      "description": "出入口清单（PLAN-ACCESS-01）：accessible 为 false、或高差 >15mm 且无坡道，判 FAIL；高差 15~30mm 判 WARN。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "accessible",
+          "step_mm"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "出入口编号，如 E-01"
+          },
+          "name": {
+            "type": "string",
+            "description": "出入口名称"
+          },
+          "position": {
+            "$ref": "#/definitions/point",
+            "description": "[x, y] 世界坐标，单位 m"
+          },
+          "width_m": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "开口宽度，单位 m"
+          },
+          "kind": {
+            "type": "string",
+            "description": "通行类型：人行 / 车行 / 人车混行"
+          },
+          "accessible": {
+            "type": "boolean",
+            "description": "是否有连续无障碍路径；false 即判 FAIL"
+          },
+          "step_mm": {
+            "type": "number",
+            "minimum": 0,
+            "description": "门口高差，单位 mm（规则也接受 step 别名）"
+          },
+          "ramp_slope": {
+            "type": "string",
+            "description": "坡道坡度，如 \"1:20\"；高差 >15mm 时必须给（规则也接受 ramp 别名）"
+          },
+          "note": {
+            "type": "string",
+            "description": "衔接场地与流线说明"
+          }
+        }
+      }
+    },
+    "basement": {
+      "type": "object",
+      "required": [
+        "outline_inside_redline",
+        "min_offset_mm",
+        "required_offset_mm"
+      ],
+      "additionalProperties": true,
+      "description": "地下室轮廓与退距（PLAN-BASE-01）：outline_inside_redline 为 false 判 FAIL；min_offset_mm 小于 required_offset_mm 判 FAIL。mm 与 m 单位混用，注意键名后缀。",
+      "properties": {
+        "outline_inside_redline": {
+          "type": "boolean",
+          "description": "轮廓是否完全在红线与退线内"
+        },
+        "min_offset_mm": {
+          "type": "number",
+          "minimum": 0,
+          "description": "外墙到红线的最小实退距，单位 mm"
+        },
+        "required_offset_mm": {
+          "type": "number",
+          "minimum": 0,
+          "description": "要求的最小退距，单位 mm"
+        },
+        "outline": {
+          "$ref": "#/definitions/polygon",
+          "description": "地下室轮廓（世界坐标，单位 m）"
+        },
+        "area_m2": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "地下室建筑面积，单位 m²"
+        },
+        "levels": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "地下层数"
+        },
+        "level_height_m": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "地下室层高，单位 m"
+        },
+        "cover_mm": {
+          "type": "number",
+          "minimum": 0,
+          "description": "顶板覆土厚度，单位 mm"
+        },
+        "use": {
+          "type": "string",
+          "description": "地下功能与车位数"
+        },
+        "offset_basis": {
+          "type": "string",
+          "description": "退距的逐边核算过程"
+        },
+        "note": {
+          "type": "string",
+          "description": "覆土分区与种植限制说明"
+        }
+      }
+    },
+    "trees": {
+      "type": "array",
+      "description": "乔木清单（PLAN-TREE-01）：soil_depth_mm 必须 ≥ 该等级的覆土下限（site.soil_min_mm，缺省按大乔木 1500 / 小乔木 600 / 灌木 450 / 地被 300 mm），不足判 FAIL；等级按 class 子串匹配。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "class",
+          "soil_depth_mm",
+          "on_roof"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "树位编号，如 T-01"
+          },
+          "class": {
+            "type": "string",
+            "minLength": 1,
+            "description": "等级：大乔木 / 小乔木 / 灌木 / 地被（按子串匹配，可带树种说明）；规则也接受 size/等级 别名"
+          },
+          "species": {
+            "type": "string",
+            "description": "树种"
+          },
+          "position": {
+            "$ref": "#/definitions/point",
+            "description": "[x, y] 世界坐标，单位 m"
+          },
+          "soil_depth_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "实际覆土厚度，单位 mm（规则也接受 soil_depth 别名）"
+          },
+          "on_roof": {
+            "type": "boolean",
+            "description": "是否种在地下室顶板上；顶板植树更严"
+          },
+          "note": {
+            "type": "string",
+            "description": "定位与避让说明"
+          }
+        }
+      }
+    },
+    "clearances": {
+      "type": "array",
+      "description": "关键空间净高（DET-CLEAR-01）：clear_mm 低于 min_mm（或顶层 clearance_limits 的同名下限、缺省惯例值）判 FAIL，余量 <100mm 判 WARN。",
+      "items": {
+        "type": "object",
+        "required": [
+          "space",
+          "clear_mm"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "条目编号，如 CL-01"
+          },
+          "space": {
+            "type": "string",
+            "minLength": 1,
+            "description": "空间名；同时是 clearance_limits 的取值键（规则也接受 name 别名）"
+          },
+          "clear_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "实际净高，单位 mm（规则也接受 clear 别名）"
+          },
+          "min_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "该空间净高下限，单位 mm；缺省时取 clearance_limits 或惯例值（规则也接受 min 别名）"
+          },
+          "note": {
+            "type": "string",
+            "description": "净高构成：层高 − 梁高 − 管线"
+          }
+        }
+      }
+    },
+    "facade": {
+      "type": "object",
+      "required": [
+        "windows_mm"
+      ],
+      "additionalProperties": true,
+      "description": "立面模数与材质（DET-WIN-01/02、AEST-MAT-01）：窗宽须互为整数倍且落在 module_mm 模数上；立面窗宽与 openings 的 width_mm 不一致判 FAIL。",
+      "properties": {
+        "module_mm": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "default": 300,
+          "description": "立面基准模数，单位 mm；缺省 300（也接受顶层 module_mm）"
+        },
+        "windows_mm": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "description": "立面窗宽系列，单位 mm，通常 3 种且互为整数倍（规则也接受 window_widths_mm/openings_mm/窗宽 别名）"
+        },
+        "beam_aligned": {
+          "type": "boolean",
+          "description": "幕墙分格是否对齐结构梁位；缺省判 WARN，false 判 FAIL"
+        },
+        "beam_aligned_note": {
+          "type": "string",
+          "description": "窗顶与梁底的标高关系算式"
+        },
+        "materials": {
+          "type": "array",
+          "description": "立面色块材质；不含玻璃与收边的主材应 ≤3 种，前三种占比 ≥85%",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "share"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "材质名；名称含 玻璃/收边 的条目不计入主材数"
+              },
+              "share": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "description": "占立面面积比；写 0.62 或 62 均可，合计 >1.5 时脚本按百分数处理（规则也接受 ratio 别名）"
+              },
+              "hex": {
+                "$ref": "#/definitions/color",
+                "description": "色值，与 materials 里的 color 对应"
+              },
+              "material": {
+                "type": "string",
+                "description": "对应 materials 的键名，供出图取色"
+              },
+              "use": {
+                "type": "string",
+                "description": "用在哪些部位"
+              }
+            }
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "立面主色与未采用材质的说明"
+        },
+        "basis": {
+          "type": "string",
+          "description": "模数协调依据"
+        }
+      }
+    },
+    "openings": {
+      "type": "array",
+      "description": "平面窗洞表（DET-WIN-02）：width_mm 必须与 facade.windows_mm 逐一对位，多一个少一个都判 FAIL。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "width_mm"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "窗洞编号，如 W-1200"
+          },
+          "width_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "洞宽，单位 mm（规则也接受 width 别名）"
+          },
+          "height_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "洞高，单位 mm"
+          },
+          "sill_mm": {
+            "type": "number",
+            "minimum": 0,
+            "description": "窗台高，单位 mm"
+          },
+          "host": {
+            "type": "string",
+            "description": "所在体量 id，可用 A/B/C 表示多处"
+          },
+          "use": {
+            "type": "string",
+            "description": "适用部位"
+          },
+          "beam_aligned": {
+            "type": "boolean",
+            "description": "该窗型是否对齐梁位"
+          }
+        }
+      }
+    },
+    "dims_mm": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "number",
+        "exclusiveMinimum": 0
+      },
+      "description": "主要尺寸抽样（AEST-MOD-01）：开间/进深/层高/分格，单位 mm，须 ≥80% 能被 module_mm 整除；不要写区间。"
+    },
+    "module_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "项目基准模数，单位 mm（建筑惯例 300，铺装 300 或 600）。dims_mm 的整除校核用它；缺省回落到 facade.module_mm。"
+    },
+    "light_checks": {
+      "type": "array",
+      "minItems": 9,
+      "description": "光影校核（AEST-LIGHT-01）：3 个日期 × 3 个时刻共 9 组，缺一组即判 FAIL；至少 1 组太阳高度角 <35°，否则 WARN。",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "time",
+          "sun_altitude_deg"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "校核日期，ISO 8601（YYYY-MM-DD）；规则也接受 节气 别名"
+          },
+          "time": {
+            "type": "string",
+            "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$",
+            "description": "校核时刻 HH:MM（规则也接受 时刻 别名）"
+          },
+          "sun_altitude_deg": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "太阳高度角，单位 度（规则也接受 altitude 别名）"
+          },
+          "latitude_deg": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "description": "计算用纬度，单位 度"
+          },
+          "time_basis": {
+            "type": "string",
+            "description": "时制：真太阳时 / 地方平太阳时"
+          },
+          "check": {
+            "type": "string",
+            "description": "这组校核要验证什么"
+          }
+        }
+      }
+    },
+    "palette": {
+      "type": "object",
+      "required": [
+        "hues",
+        "main_share",
+        "high_sat_share",
+        "lightness_range"
+      ],
+      "additionalProperties": true,
+      "description": "色彩控制（AEST-COLOR-01）：色相 >5、主色 <50% 判 FAIL；高饱和 >10%、明度极差 >25 判 WARN。",
+      "properties": {
+        "hues": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "色相数（规则也接受 hue_count 别名）"
+        },
+        "hue_list": {
+          "type": "array",
+          "description": "逐色相明细",
+          "items": {
+            "type": "object",
+            "required": [
+              "family",
+              "hex"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "family": {
+                "type": "string",
+                "description": "色族名"
+              },
+              "hex": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/definitions/color"
+                },
+                "description": "该色族的色值列表"
+              },
+              "share": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "description": "该色族面积占比，0~1"
+              },
+              "lstar": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "description": "对应的 CIE L* 值，与 hex 一一对应"
+              },
+              "scope": {
+                "type": "string",
+                "description": "用在哪个面（立面/屋面）"
+              }
+            }
+          }
+        },
+        "main_share": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "主色面积占比，0~1；<0.5 判 FAIL（规则也接受 primary_share 别名）"
+        },
+        "high_sat_share": {
+          "type": "number",
+          "minimum": 0,
+          "description": "高饱和（HSL S≥70%）面积占比，0~1；>0.10 判 WARN（规则也接受 saturated_share 别名）"
+        },
+        "lightness_range": {
+          "type": "number",
+          "minimum": 0,
+          "description": "立面主辅色 L* 极差；>25 判 WARN（规则也接受 l_range 别名）"
+        },
+        "lightness_range_all": {
+          "type": "number",
+          "minimum": 0,
+          "description": "含屋面在内的全色域 L* 极差，仅供评审参考，规则不读"
+        },
+        "definitions": {
+          "type": "string",
+          "description": "各项指标的口径定义"
+        },
+        "note": {
+          "type": "string",
+          "description": "超限项的说明与处置方案"
+        }
+      }
+    }
+  }
+}

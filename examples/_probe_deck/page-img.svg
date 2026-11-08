@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <rect x="0" y="0" width="960" height="540" fill="#FFFFFF"/>
+  <text x="56" y="64" font-family="SimHei, sans-serif" font-size="32" fill="#1B2A33">图片引用测试</text>
+  <image href="png/page-02.png" x="56" y="96" width="560" height="315"/>
+  <text x="640" y="120" font-family="SimHei, sans-serif" font-size="16" fill="#6B7A82">右侧为图注位</text>
+</svg>
