@@ -58,6 +58,11 @@ foreach ($c in $cands) { if (-not $c) { continue }; try { $v = & $c --version 2>
 
 ## 安装
 
+```bash
+git clone https://github.com/jaspercolecole-stack/arch-env-design.git
+cd arch-env-design
+```
+
 技能目录是 bundle 形式（`<name>/SKILL.md`），DSH 热加载，无需重启：
 
 ```powershell
