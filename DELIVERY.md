@@ -168,3 +168,13 @@ L 形用地 78×96 m 带 30×42 m 凹口，3 栋体量（文化馆 / 图书室 /
 - 本技能**不覆盖用户已有文件**，同名先备份 `*.bak`；产物统一落 `<project>/out/`。
 - 图纸、指标、模型三者同源于 `design.json`，改数据即改全部；**不要在图上直接改**。
 - 出图后必须看 PNG（铁律②）。没看过图不算出完。
+
+---
+
+## 9. 发布
+
+- 仓库：https://github.com/jaspercolecole-stack/arch-env-design （MIT，公开）
+- 分支 `main` 即交付版本；`verify_skill.py` 在仓库根可直接对自己跑：`<python> verify_skill.py --skill . --work _verify`
+- 安装：`.\install_skill.cmd -Scope User`（或 `-Scope Workspace -WorkspaceRoot "<工作区>"`）
+- 远程复验：新克隆的仓库跑 18/18 PASS，从克隆安装出的技能目录亦 18/18 PASS。
+
